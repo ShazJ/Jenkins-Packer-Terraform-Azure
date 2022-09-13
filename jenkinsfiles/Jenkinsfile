@@ -5,8 +5,8 @@ node (label: 'stuff') {
     try {
         stage('Setup stuff') {
             // Pull latest container
-            sh label: Setup stuff"
-                script: ls
+            sh label: "Setup stuff"
+                script: "ls"
         }
         stage('Deploy environment - todo') {
         }
