@@ -7,5 +7,5 @@
             sh label: "Pull latest container"
                 script: ls
         }
-        stage('Deploy environment') {
+        stage('Deploy environment - todo') {
         }
