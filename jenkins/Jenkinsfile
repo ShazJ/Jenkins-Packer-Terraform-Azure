@@ -1,0 +1,11 @@
+   stage('Clone repository') {
+        checkout scm
+    }
+    try {
+        stage('Setup stuff') {
+            // Pull latest container
+            sh label: "Pull latest container"
+                script: ls
+        }
+        stage('Deploy environment') {
+        }
