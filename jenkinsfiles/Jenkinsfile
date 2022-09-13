@@ -1,3 +1,4 @@
+node (label: 'stuff') {   
    stage('Clone repository') {
         checkout scm
     }
@@ -9,3 +10,11 @@
         }
         stage('Deploy environment - todo') {
         }
+    }
+    catch (exc) {
+        currentBuild.result = 'FAILURE'
+    }
+    finally {
+        stage('Terraform destroy') {
+    }
+}
