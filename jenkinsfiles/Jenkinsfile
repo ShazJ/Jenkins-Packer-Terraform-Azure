@@ -4,7 +4,6 @@ node (label: 'stuff') {
     }
     try {
         stage('Setup stuff') {
-            // Pull latest container
             sh label: "Setup stuff"
                 script: "ls"
         }
@@ -16,5 +15,8 @@ node (label: 'stuff') {
     }
     finally {
         stage('Terraform destroy') {
+            sh label: "destroy stuff"
+                script: "ls"
+        }
     }
 }
