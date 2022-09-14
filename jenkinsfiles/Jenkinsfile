@@ -14,16 +14,18 @@ pipeline {
     }
     stages {
             stage('Clone repository') {
-                checkout scm
-            }
-            stage('TerraformInit'){
-            steps {
-                dir('terraform/'){
-                    sh "terraform init -input=false"
-                    sh "echo \$PWD"
-                    sh "whoami"
+                steps {
+                    checkout scm
                 }
             }
+            stage('TerraformInit'){
+                steps {
+                    dir('terraform/'){
+                        sh "terraform init -input=false"
+                        sh "echo \$PWD"
+                        sh "whoami"
+                    }
+                }
         }
 
         stage('TerraformFormat'){
