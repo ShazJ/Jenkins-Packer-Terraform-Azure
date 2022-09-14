@@ -1,22 +1,82 @@
-node (label: 'stuff') {   
-   stage('Clone repository') {
-        checkout scm
+pipeline {
+    agent any
+    tools {
+        "org.jenkinsci.plugins.terraform.TerraformInstallation" "terraform-0.11.8"
     }
-    try {
-        stage('Setup stuff') {
-            sh label: "Setup stuff"
-                script: "ls"
+    parameters {
+        string(name: 'WORKSPACE', defaultValue: 'development', description:'setting up workspace for terraform')
+    }
+    environment {
+        TF_HOME = tool('terraform-1.2.9')
+        TF_IN_AUTOMATION = "true"
+        PATH = "$TF_HOME:$PATH"
+        ACCESS_KEY = credentials('19512b7f-0c16-48a4-81b6-9ff4e5dec0c6')
+    }
+    stages {
+            stage('Clone repository') {
+                checkout scm
+            }
+            stage('TerraformInit'){
+            steps {
+                dir('terraform/'){
+                    sh "terraform init -input=false"
+                    sh "echo \$PWD"
+                    sh "whoami"
+                }
+            }
         }
-        stage('Deploy environment - todo') {
+
+        stage('TerraformFormat'){
+            steps {
+                dir('jenkins/'){
+                    sh "terraform fmt -list=true -write=false -diff=true -check=true"
+                }
+            }
         }
-    }
-    catch (exc) {
-        currentBuild.result = 'FAILURE'
-    }
-    finally {
-        stage('Terraform destroy') {
-            sh label: "destroy stuff"
-                script: "ls"
+
+        stage('TerraformValidate'){
+            steps {
+                dir('jenkins/'){
+                    sh "terraform validate"
+                }
+            }
+        }
+
+        stage('TerraformPlan'){
+            steps {
+                dir('jenkins/'){
+                    script {
+                        try {
+                            sh "terraform workspace new ${params.WORKSPACE}"
+                        } catch (err) {
+                            sh "terraform workspace select ${params.WORKSPACE}"
+                        }
+                        sh "terraform plan -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SECRET_KEY' \
+                        -out terraform.tfplan;echo \$? > status"
+                        stash name: "terraform-plan", includes: "terraform.tfplan"
+                    }
+                }
+            }
+        }
+        stage('TerraformApply'){
+            steps {
+                script{
+                    def apply = false
+                    try {
+                        input message: 'Can you please confirm the apply', ok: 'Ready to Apply the Config'
+                        apply = true
+                    } catch (err) {
+                        apply = false
+                         currentBuild.result = 'UNSTABLE'
+                    }
+                    if(apply){
+                        dir('jenkins/'){
+                            unstash "terraform-plan"
+                            sh 'terraform apply terraform.tfplan'
+                        }
+                    }
+                }
+            }
         }
     }
 }
