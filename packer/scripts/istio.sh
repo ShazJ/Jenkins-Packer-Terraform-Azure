@@ -1,8 +1,9 @@
-#!/bin/bash
-echo "Provisioning - Istio"
-#https://github.com/istio/istio/releases/download/{{ istioversion }}/istio-{{ istioversion }}-linux-amd64.tar.gz
+#############################################################
+##  File:  istio.sh
+##  Desc:  Installs and configures istio
+#############################################################
+#!/bin/bash -x
+echo "INSTALLING - Istio"
 
-#mebbe install using helm??
-
-#testing?
-#https://istio-releases.github.io/v0.1/docs/tasks/installing-istio.html
+ISTIO_VERSION="1.9.1"
+curl https://github.com/istio/istio/releases/download/$ISTIO_VERSION/istio-$ISTIO_VERSION-linux-amd64.tar.gz
