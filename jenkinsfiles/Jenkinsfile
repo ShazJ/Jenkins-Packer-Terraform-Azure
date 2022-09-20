@@ -1,6 +1,10 @@
 pipeline {
     agent any
+    environment {
+        TF_IN_AUTOMATION = "true"
+    }
     parameters {
+        //string(name: 'AZURE_KEYVAULT_URL', defaultValue: 'https://kv-cse-jenkins-example.vault.azure.net')
         string(name: 'WORKSPACE', defaultValue: 'development', description:'setting up workspace for terraform')
     }
     environment {
