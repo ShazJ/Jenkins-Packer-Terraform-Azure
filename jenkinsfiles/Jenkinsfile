@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-        TF_IN_AUTOMATION = "true"
-    }
     parameters {
         string(name: 'WORKSPACE', defaultValue: 'development', description:'setting up workspace for terraform')
     }
@@ -21,7 +18,7 @@ pipeline {
             stage('TerraformInit'){
                 steps {
                     withCredentials([azureServicePrincipal(
-                        credentialsId: 'azure_service_principal',
+                        credentialsId: '19512b7f-0c16-48a4-81b6-9ff4e5dec0c6',
                         subscriptionIdVariable: 'ARM_SUBSCRIPTION_ID',
                         clientIdVariable: 'ARM_CLIENT_ID',
                         clientSecretVariable: 'ARM_CLIENT_SECRET',
