@@ -56,7 +56,8 @@ pipeline {
             steps {
                 dir('jenkins/'){
                     script {
-
+                        sh """
+                        echo "Terraform Plan"
                         sh "terraform plan -backend-config="storage_account_name=terraforsauk" -backend-config="container_name=terraformscuk" -backend-config="key=prod.terraform.tfstate" -backend-config="resource_group_name=NetworkWatcherRG" \
                         -out terraform.tfplan;echo \$? > status"
                         stash name: "terraform-plan", includes: "terraform.tfplan"
